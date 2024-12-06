@@ -1,0 +1,85 @@
+header {
+    transition: all 0.5s ease 0s;
+    position: relative;
+    z-index: 99999;
+}
+
+.navbar-header-custom {
+    padding: 10px 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.topbar1 {
+    width: 100%;
+}
+
+.topbar2 {
+    width: 60%;
+}
+.topbar_icon_cont{
+    width: 100%;
+}
+.topbar_icon_box{
+    width: 33.33%;
+}
+.top_icon_img{
+    height: auto;
+}
+
+.logo{
+    width: 120px;
+}
+.topbar_icon_head{
+    font-size: 18px;
+    font-weight: 600;
+}
+.topbar_icon_para{
+    font-size: 16px;
+}
+
+.menu_areas {
+    background: #9b9c2e;
+}
+
+.Headerdefault_btn {
+    padding: 5px 30px;
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    text-transform: capitalize;
+    background-color: var(--secondryColor);
+    border: none;
+    outline: none;
+    margin-right: 25px;
+    border-radius: 5px;
+}
+
+.HNavActive {
+    background: var(--secondryColor);
+}
+
+.nav_ul a{
+    padding: 5px 15px;
+}
+
+.headCont {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.headbox1{
+    width: 25%;
+}
+.headbox2{
+    width: 50%;
+}
+.headbox3{
+    width: 25%;
+}

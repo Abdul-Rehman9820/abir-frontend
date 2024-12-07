@@ -92,7 +92,7 @@ export default function Login() {
           // Cookies.set("token", result.token, { expires: 7 }); // Expires in 7 days
           Cookies.set("token", result.token, {
             expires: 7, 
-            sameSite: "strict",
+            sameSite: "none",
           }); // Expires in 7 days
 
           router.push("/my-account");

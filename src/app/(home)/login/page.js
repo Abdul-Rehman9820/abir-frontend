@@ -93,6 +93,7 @@ export default function Login() {
           Cookies.set("token", result.token, {
             expires: 7, 
             sameSite: "none",
+            secure: process.env.NODE_ENV === "production", // Secure cookies in production
           }); // Expires in 7 days
 
           router.push("/my-account");

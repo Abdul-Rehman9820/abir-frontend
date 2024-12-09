@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 
+import { useAuth } from '../../../useAuth';  // Import the useAuth hook
+
 export default function SingleVideo({ params }) {
+
+    const { token } = useAuth(); // Get session token and status
+
     const Video_Id = params?.Video_Id; // Safely access params
     const [data, setData] = useState(null); // Initialize with null for single data
     const [isLoading, setIsLoading] = useState(true);
@@ -14,8 +19,10 @@ export default function SingleVideo({ params }) {
                 `${process.env.NEXT_PUBLIC_Backend_API_URL}/api/getSinglePurchasedVideo`,
                 {
                     method: "POST",
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${token}`, // Use the token from useAuth hook
+                    },
                     body: JSON.stringify({ Video_Id }),
                 }
             );
@@ -33,8 +40,11 @@ export default function SingleVideo({ params }) {
     }
 
     useEffect(() => {
+
+        if (!token) return; // Do nothing if not authenticated or no token
+
         if (Video_Id) fetchData(); // Fetch only if Video_Id exists
-    }, [Video_Id]); // Rerun when Video_Id changes
+    }, [token, Video_Id]); // Rerun when Video_Id changes
 
     return (
         <>

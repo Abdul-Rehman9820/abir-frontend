@@ -7,6 +7,7 @@ import "./usercomponets_styles/commonglobalstyle.css";
 import "./usercomponets_styles/responsive.css";
 
 import ReduxProvider from '../ReduxProvider';
+import SessionWrapper from '../SessionWrapper';
 
 import Header from "./UserComponents/Header";
 import Footer from "./UserComponents/Footer";
@@ -39,12 +40,13 @@ export default function RootLayout({ children }) {
         />
 
 
-
-        <ReduxProvider>
-          <Header />
-          {children}
-          <Footer />
-        </ReduxProvider>
+        <SessionWrapper>
+          <ReduxProvider>
+            <Header />
+            {children}
+            <Footer />
+          </ReduxProvider>
+        </SessionWrapper>
 
 
       </body>

@@ -5,7 +5,12 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from 'next/navigation';
 import Script from "next/script";
 
+import { useAuth } from '../useAuth';  // Import the useAuth hook
+
 export default function Pay() {
+
+  const { token } = useAuth(); // Get session token and status
+
 
   const router = useRouter();
 
@@ -110,18 +115,20 @@ export default function Pay() {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`, // Use the token from useAuth hook
               },
-              credentials: 'include',
               body: JSON.stringify({
                 finalTotal,  //! fetching from useState
               }),
             });
 
             // if not login or token issue
+
             if (res.status === 401) {
               router.push('/login');  // Adjust the route to your actual login page
               return;
             }
+            
            // if not login or token issue
 
 
@@ -134,8 +141,8 @@ export default function Pay() {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                'Authorization': `Bearer ${token}`, // Use the token from useAuth hook
               },
-              credentials: 'include',
               body: JSON.stringify({
                 orderID: PayPaldata.orderID,
                 Product_ID: Product_ID,   // fetching from useState
@@ -166,7 +173,7 @@ export default function Pay() {
 
     loadPayPalButtons(); // Load PayPal buttons
 
-  }, [finalTotal]); // Re-run the effect when finalTotal changes
+  }, [token, finalTotal]); // Re-run the effect when finalTotal changes
 
   const handlePlaceOrder = () => {
     alert(finalTotal);

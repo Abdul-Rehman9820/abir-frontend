@@ -1,3 +1,6 @@
+'use client'
+
+import { useEffect, useState } from "react";
 
 import Link from "next/link";
 
@@ -9,11 +12,20 @@ import HeaderLogo from "./headerLogo";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { cookies } from "next/headers";
+import { useAuth } from '../useAuth';  // Import the useAuth hook
+
 
 const Header = () => {
 
-  const cookieValue = cookies().get("token")?.value;
+  const { token, isLoading, isAuthenticated } = useAuth(); // Get session token and status
+  const [isSessionLoaded, setIsSessionLoaded] = useState(false);
+
+  // Wait for session data to load
+  useEffect(() => {
+    if (!isLoading) {
+      setIsSessionLoaded(true);
+    }
+  }, [isLoading]);
 
 
   return (
@@ -48,7 +60,7 @@ const Header = () => {
 
                 <div className="headCont">
 
-                  
+
                   <div className="headbox1">
 
                   </div>
@@ -72,18 +84,23 @@ const Header = () => {
                     <div className="nav_button_cont flex justify-end">
 
                       {/* cookie logic */}
-              
 
-                      {cookieValue ? (
-                        <Link href="/my-account" className="Headerdefault_btn">
-                          My Account
-                        </Link>
-                      ) : (
-                        <Link href="/login" className="Headerdefault_btn">
-                          Login
-                        </Link>
-                      )}
-                  
+
+                      {/* Conditional Login/Account Link */}
+                      {
+                        isSessionLoaded && (
+                          token ? (
+                            <Link href="/my-account" className="Headerdefault_btn">
+                              My Account
+                            </Link>
+                          ) : (
+                            <Link href="/login" className="Headerdefault_btn">
+                              Login
+                            </Link>
+                          )
+                        )
+                      }
+
 
 
                       {/* cookie logic */}

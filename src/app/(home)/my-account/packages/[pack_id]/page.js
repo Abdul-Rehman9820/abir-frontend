@@ -3,9 +3,13 @@
 import { useEffect, useState } from 'react';
 import Link from "next/link";
 
+import Pre_Prescription from '../pre_prescription_form'
 
+import { useAuth } from '../../../useAuth';  // Import the useAuth hook
 
 export default function myList({ params }) {
+
+  const { token } = useAuth(); // Get session token and status
 
   const pack_id = params.pack_id; // Safely access params
 
@@ -23,7 +27,9 @@ export default function myList({ params }) {
         `${process.env.NEXT_PUBLIC_Backend_API_URL}/api/singlePurchasedPackage/${pack_id}`,
         {
           method: "GET",
-          credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${token}`, // Use the token from useAuth hook
+          },
         }
       );
 
@@ -48,8 +54,11 @@ export default function myList({ params }) {
 
 
   useEffect(() => {
+
+    if (!token) return; // Do nothing if not authenticated or no token
+
     fetchData();
-  }, []); // Fetch data whenever currentPage changes
+  }, [token]); // Fetch data whenever currentPage changes
 
 
   // Function to encode a string to base64
@@ -66,13 +75,10 @@ export default function myList({ params }) {
 
 
   return (
+
+
     <div className="container mx-auto py-5">
       <div className="flex flex-wrap -mx-4">
-        {/* Sidebar */}
-        {/* <div className="w-full md:w-1/4 px-4">
-          <h5 className="mb-4 font-semibold text-lg">MY ACCOUNT</h5>
-          <MyNav />
-        </div> */}
         {/* Dashboard Content */}
         <div className="w-full md:w-4/4 px-4">
 
@@ -97,76 +103,96 @@ export default function myList({ params }) {
             ) : data && data.length === 0 ? (
               <div className="empty-message mt-4 mb-4">No Packages found</div>
             ) : (
-              <>
-
-                <table class="min-w-full table-auto mt-5">
-                  <thead class="bg-gray-100">
-                    <tr>
-                      <th class="px-4 py-2 text-left">#</th>
-                      {/* <th class="px-4 py-2 text-left">Type</th> */}
-                      <th class="px-4 py-2 text-left">Steps</th>
-                      <th class="px-4 py-2 text-left">Start Date</th>
-                      <th class="px-4 py-2 text-left"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-
-                    {data.Pur_Package_attr_type.map((item, index) => {
-                      const attrDate = new Date(data.Pur_Package_attr_Date[index]); // Get the date of the current row
-                      const currentDate = new Date(); // Get the current date for comparison
-
-                      // Enable the row only if the attribute date is less than the current date
-                      const isEnabled = attrDate < currentDate;
-
-                      return (
-                        <tr
-                          key={index}
-                          className={`border-t border-b border-gray-200 ${isEnabled ? '' : 'bg-gray-100 cursor-not-allowed opacity-50'
-                            }`}
-                        >
-                          <td>{index + 1}</td>
-
-                          <td className="px-4 py-2">
-                            {dataAttr[data.Package_attr_value[index]] && dataAttr[data.Package_attr_value[index]].attributes_title_user
-                              ? dataAttr[data.Package_attr_value[index]].attributes_title_user
-                              : 'Call with Abir Life'}
-                          </td>
-
-                          <td className="px-4 py-2">{attrDate.toLocaleDateString()}</td>
-
-                          <td className="px-4 py-2">
-                            {isEnabled && (
-
-                              data.Pur_Package_attr_type[index] === 'Recipe' ? (
-                                <Link
-                                  href={`/my-account/packages/view?Pack_ID=${data.id}&Pack_Attr=${encodeToBase64(data.Package_attr_value[index])}`}
-                                  className="text-left hover:text-white hover:bg-gray-200 transition-colors px-4 py-2"
-                                >
-                                  View
-                                </Link>
-                              ) : (
-                                <Link
-                                  href={`/my-account/packages/call-view?Book_ID=${encodeToBase64(data.id)}`}
-                                  className="text-left hover:text-white hover:bg-gray-200 transition-colors px-4 py-2"
-                                >
-                                  View Timing
-                                </Link>
-                              )
-
-                            )}
-                          </td>
-                        </tr>
-                      );
-
-                    })}
 
 
+              data.Pre_prescription_submite === 0 ? (
+
+                <>
+                  <Pre_Prescription Pack_Purches_Id={data.id} />
+                </>
+
+              ) : (
+
+                <>
+
+                  <table class="min-w-full table-auto mt-5">
+
+                    <thead class="bg-gray-100">
+
+                      <tr>
+                        <th class="px-4 py-2 text-left">#</th>
+                        {/* <th class="px-4 py-2 text-left">Type</th> */}
+                        <th class="px-4 py-2 text-left">Steps</th>
+                        <th class="px-4 py-2 text-left">Start Date</th>
+                        <th class="px-4 py-2 text-left"></th>
+                      </tr>
+
+                    </thead>
+
+                    <tbody>
 
 
-                  </tbody>
-                </table>
+                      {data.Pur_Package_attr_type.map((item, index) => {
+                        const attrDate = new Date(data.Pur_Package_attr_Date[index]); // Get the date of the current row
+                        const currentDate = new Date(); // Get the current date for comparison
 
-              </>
+                        // Enable the row only if the attribute date is less than the current date
+                        const isEnabled = attrDate < currentDate;
+
+                        return (
+                          <tr
+                            key={index}
+                            className={`border-t border-b border-gray-200 ${isEnabled ? '' : 'bg-gray-100 cursor-not-allowed opacity-50'
+                              }`}
+                          >
+                            <td>{index + 1}</td>
+
+                            <td className="px-4 py-2">
+                              {dataAttr[data.Package_attr_value[index]] && dataAttr[data.Package_attr_value[index]].attributes_title_user
+                                ? dataAttr[data.Package_attr_value[index]].attributes_title_user
+                                : 'Call with Abir Life'}
+                            </td>
+
+                            <td className="px-4 py-2">{attrDate.toLocaleDateString()}</td>
+
+                            <td className="px-4 py-2">
+                              {isEnabled && (
+
+                                data.Pur_Package_attr_type[index] === 'Recipe' ? (
+                                  <Link
+                                    href={`/my-account/packages/view?Pack_ID=${data.id}&Pack_Attr=${encodeToBase64(data.Package_attr_value[index])}`}
+                                    className="text-left hover:text-white hover:bg-gray-200 transition-colors px-4 py-2"
+                                  >
+                                    View
+                                  </Link>
+                                ) : (
+                                  <Link
+                                    href={`/my-account/packages/call-view?Book_ID=${encodeToBase64(data.id)}`}
+                                    className="text-left hover:text-white hover:bg-gray-200 transition-colors px-4 py-2"
+                                  >
+                                    Book Now
+                                  </Link>
+                                )
+
+                              )}
+                            </td>
+                          </tr>
+                        );
+
+                      })}
+
+
+                    </tbody>
+                  </table>
+
+                </>
+
+              )
+
+
+
+
+
             )}
 
 

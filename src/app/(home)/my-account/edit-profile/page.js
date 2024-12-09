@@ -5,7 +5,11 @@ import Link from "next/link";
 
 import { toast } from 'react-toastify';
 
+import { useAuth } from '../../useAuth';  // Import the useAuth hook
+
 export default function Register() {
+
+  const { token, isLoading, isAuthenticated } = useAuth(); // Get session token and status
 
 
   // Fetchin User
@@ -15,16 +19,18 @@ export default function Register() {
   });
 
   useEffect(() => {
-
+   
+    if (!token) return; // Do nothing if not authenticated or no token
 
     const fetchUserDetails = async () => {
+
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_Backend_API_URL}/api/userDetail`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // Use the token from useAuth hook
           },
-          credentials: 'include',
         });
 
         if (!response.ok) {
@@ -45,7 +51,7 @@ export default function Register() {
     };
 
     fetchUserDetails();
-  }, []); 
+  }, [token]); 
 // Fetchin User
 
 
@@ -62,7 +68,9 @@ export default function Register() {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_Backend_API_URL}/api/updateUser`, {
         method: "POST",
-        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${token}`, // Use the token from useAuth hook
+        },
         body: formData,
       });
   

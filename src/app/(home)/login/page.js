@@ -4,9 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { useSession, signIn, signOut } from "next-auth/react";
+
 import Cookies from "js-cookie";
 
 export default function Login() {
+
+  const { data: session } = useSession();
+
   const router = useRouter();
 
   const [isLoginDisabled, setIsLoginDisabled] = useState(true); // State to manage button disabled
@@ -89,20 +94,28 @@ export default function Login() {
 
       if (response.ok) {
         if (result.message === "verified") {
-          // Cookies.set("token", result.token, { expires: 7 }); // Expires in 7 days
-          Cookies.set("token", result.token, {
-            expires: 7, 
-            sameSite: "none",
-            secure: true, // Secure cookies in production
-          }); // Expires in 7 days
 
-          router.push("/my-account");
+          // Use signIn method to authenticate with credentials provider
+          const res = await signIn("credentials", {
+            EmailID: formData.EmailID,
+            redirect: false, // Prevent automatic redirect
+          });
+
+          if (res?.ok) {
+            // Successful login, redirect manually
+            router.push("/my-account");
+          } else {
+            console.error(result?.error || "Login failed");
+          }
+
+
         } else {
           setErrorOTP(result.message || "Something went wrong.");
         }
       } else {
         setErrorOTP(result.message || "Something went wrong.");
       }
+
     } catch (error) {
       setIsLoading(false); // Stop loading
       setErrorOTP("Something went wrong");
@@ -117,6 +130,16 @@ export default function Login() {
             <div className="">
               <div className="user-all-form">
                 <div className="contact-form">
+                  {/* <div>
+                    {session ? (
+                      <div>
+                        <h6>Token: {session.accessToken}!</h6>
+                        <button onClick={() => signOut()}>Sign out</button>
+                      </div>
+                    ) : (
+                      <p>No Session</p> // Or redirect, or show a sign-in option
+                    )}
+                  </div> */}
                   <h3>Log In</h3>
 
                   {isLoading && <p>Loading, please wait...</p>}

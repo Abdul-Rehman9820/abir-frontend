@@ -39,44 +39,6 @@ export default function SinglePdf({ recipe_pdf_slug }) {
 
 
 
-    // add to  cart login
-    const handleAddToCart = async () => {
-        if (!data) return;
-    
-        const product = {
-            Product_ID: data.id,
-            Product_Type: data.Product_Type,
-        };
-    
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_Backend_API_URL}/api/cart`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include', 
-                body: JSON.stringify(product),
-            });
-    
-            const responseData = await response.json();
-    
-            if (!response.ok) {
-                if (responseData.message === "already") {
-                    toast.warning('This item is already in the cart');
-                    return;
-                }
-                toast.error('Failed to add item to cart');
-                return;
-            }
-    
-            toast.success('This item has been added to the cart');
-        } catch (error) {
-            console.error('Error adding item to cart:', error);
-            toast.error('An error occurred. Please try again later.');
-        }
-    };
-    // add to  cart login
-    
-      
-
     return (
         <>
             {isLoading ? (

@@ -5,14 +5,23 @@ import MyNav from './my-account-nav';
 import Link from "next/link";
 
 
+import { signOut } from "next-auth/react";
+
+import { useAuth } from '../useAuth';  // Import the useAuth hook
+
+
 export default function myAccount() {
+
+  const { token, isLoading, isAuthenticated } = useAuth(); // Get session token and status
 
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+
   useEffect(() => {
 
+    if (!token) return; // Do nothing if not authenticated or no token
 
     const fetchUserDetails = async () => {
       try {
@@ -20,29 +29,21 @@ export default function myAccount() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // Use the token from useAuth hook
           },
-          credentials: 'include',
         });
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
         const result = await response.json();
-        if (result.success) {
-          setUserData(result.data);
-        } else {
-          throw new Error(result.message || 'Failed to fetch data');
-        }
+        if (!result.success) throw new Error(result.message || 'Failed to fetch data');
+        setUserData(result.data);
       } catch (err) {
         setError(err.message);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchUserDetails();
-  }, []); // Dependency on isAuth to refetch only if auth state changes
+  }, [token]); // Only re-run if token or authentication status changes
 
 
 
@@ -63,7 +64,19 @@ export default function myAccount() {
 
 
             <>
-              {loading ? (
+
+
+              {error ? (
+                <p className="text-red-500">{error}</p>
+              ) : userData ? (
+                <div>
+                  <p><strong>Hello</strong> {userData.Fname}</p>
+                  <p>
+                    <span>( <strong>Email:</strong> {userData.EmailID} )</span>
+                    <span>( <strong>Mobile:</strong> {userData.Mobnumber} )</span>
+                  </p>
+                </div>
+              ) : (
                 <div className="flex flex-wrap justify-center w-full">
                   {[...Array(2)].map((_, colIndex) => (
                     <div className="w-1/2 p-2" key={colIndex}>
@@ -73,17 +86,8 @@ export default function myAccount() {
                     </div>
                   ))}
                 </div>
-              ) : userData ? (
-                <>
-                  <p><strong>Hello</strong> {userData.Fname}</p>
-                  <p>
-                    <span>( <strong>Email:</strong> {userData.EmailID} )</span>
-                    <span>( <strong>Mobile:</strong> {userData.Mobnumber} )</span>
-                  </p>
-                </>
-              ) : (
-                <p>Not found</p>
               )}
+
 
             </>
 

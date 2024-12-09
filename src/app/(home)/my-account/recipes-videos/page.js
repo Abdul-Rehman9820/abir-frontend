@@ -4,8 +4,12 @@ import { useEffect, useState } from 'react';
 import Link from "next/link";
 import MyNav from '../my-account-nav';
 
+import { useAuth } from '../../useAuth';  // Import the useAuth hook
+
 
 export default function myPDF() {
+
+  const { token } = useAuth(); // Get session token and status
 
   const [data, setData] = useState([]); // Initialize with empty array
   const [isLoading, setIsLoading] = useState(true);
@@ -20,7 +24,9 @@ export default function myPDF() {
         `${process.env.NEXT_PUBLIC_Backend_API_URL}/api/getPurchasedVideo`,
         {
           method: "GET",
-          credentials: 'include',
+          headers: {
+            'Authorization': `Bearer ${token}`, // Use the token from useAuth hook
+          },
         }
       );
 
@@ -41,8 +47,12 @@ export default function myPDF() {
 
 
   useEffect(() => {
+
+    if (!token) return; // Do nothing if not authenticated or no token
+
     fetchData();
-  }, []); // Fetch data whenever currentPage changes
+
+  }, [token]); // Fetch data whenever currentPage changes
 
 
 

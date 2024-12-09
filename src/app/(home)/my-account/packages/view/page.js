@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 
 import { useSearchParams } from "next/navigation";
 
-export default function SinglePdf() {
+function SinglePdf() {
 
     const searchParams = useSearchParams();
 
@@ -164,5 +164,13 @@ export default function SinglePdf() {
 
         </div >
 
+    );
+}
+
+export default function LodingSc() {
+    return (
+        <Suspense fallback={<p>Loading...</p>}>
+            <SinglePdf />
+        </Suspense>
     );
 }

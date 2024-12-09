@@ -1,0 +1,9 @@
+NEXT_PUBLIC_Backend_API_URL='https://abirlife.com'
+
+GOOGLE_CLIENT_ID=916080981653-ghlmf31u9sr7rk44h7m9lm3mllc15108.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+NEXTAUTH_SECRET=abir_life_@secret123
+NEXTAUTH_URL='https://abir-frontend.vercel.app'
+
+# paypal
+NEXT_PUBLIC_PAYPAL_CLIENT_ID=ARDqZUPhl8mG_cNFB-THJoPIBb4tjO4oiCsY3d8FHw3t-wnVVhJ9vIzn_rAv5ViEij_o0Ev-bAv5f9Kv

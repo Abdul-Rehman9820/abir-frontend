@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef , Suspense} from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from 'next/navigation';
 import Script from "next/script";
 
 import { useAuth } from '../useAuth';  // Import the useAuth hook
 
-export default function Pay() {
+function Pay() {
 
   const { token } = useAuth(); // Get session token and status
 
@@ -180,6 +180,7 @@ export default function Pay() {
   };
 
   return (
+
     <section className="checkout-area py-14">
 
       <Script
@@ -283,5 +284,16 @@ export default function Pay() {
 
 
     </section>
+
+  );
+}
+
+
+
+export default function LodingSc() {
+  return (
+      <Suspense fallback={<p>Loading...</p>}>
+          <Pay />
+      </Suspense>
   );
 }

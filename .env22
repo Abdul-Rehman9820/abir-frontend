@@ -1,8 +1,10 @@
-NEXT_PUBLIC_Backend_API_URL='http://65.0.179.147'
+NEXT_PUBLIC_Backend_API_URL='http://localhost:4000'
 
 
 NEXTAUTH_SECRET=abir_life_@secret123
-NEXTAUTH_URL='https://abir-frontend.vercel.app'
+NEXTAUTH_URL=http://localhost:3000
 
 # paypal
 NEXT_PUBLIC_PAYPAL_CLIENT_ID=ARDqZUPhl8mG_cNFB-THJoPIBb4tjO4oiCsY3d8FHw3t-wnVVhJ9vIzn_rAv5ViEij_o0Ev-bAv5f9Kv
+
+
